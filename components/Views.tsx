@@ -1,5 +1,5 @@
 'use client'
-import {useEffect,useRef} from 'react'
+import {useEffect,useRef,useState} from 'react'
 import {roles,phaseNames,eventIcons} from './data'
 
 export function Header({leave}:{leave?:()=>void}){return <header className="top"><div><div className="brand">Mafia by Ibro</div><small className="muted">Тёмный город</small></div>{leave?<button className="mini" onClick={leave}>Выйти</button>:<div className="badge">● онлайн</div>}</header>}
@@ -10,36 +10,32 @@ export function LobbyView({room,players,me,host,error,actions}:any){return <main
 
 function BottomNav({screen,setScreen,unread}:{screen:string,setScreen:(s:any)=>void,unread:number}){const items=[['game','◉','Игра'],['chat','◌','Чат'],['players','♟','Игроки'],['role','♠','Роль']];return <nav className="bottomNav">{items.map(([key,icon,label])=><button key={key} onClick={()=>setScreen(key)} className={screen===key?'active':''}><span>{icon}</span><small>{label}</small>{key==='chat'&&unread>0&&<b>{unread>9?'9+':unread}</b>}</button>)}</nav>}
 
+function messageTime(value:string){if(!value)return '';return new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit'}).format(new Date(value))}
+
 export function GameView(p:any){
- const chatEndRef=useRef<HTMLDivElement|null>(null)
+ const chatEndRef=useRef<HTMLDivElement|null>(null),chatRef=useRef<HTMLDivElement|null>(null),inputRef=useRef<HTMLTextAreaElement|null>(null)
+ const [awayFromBottom,setAwayFromBottom]=useState(false)
  const info=roles[p.role?.role_key],nightRole=p.role&&['mafia','don','doctor','detective','bodyguard','journalist','blackmailer','maniac'].includes(p.role.role_key),action=p.room.status==='voting'||(p.room.status==='night'&&nightRole)
  const chatOpen=p.chat==='dead'||p.chat==='mafia'||['role_reveal','morning','discussion','voting'].includes(p.room.status)
  const systemCount=p.messages.filter((m:any)=>m.channel==='system').length
  const actionTitle=p.room.status==='voting'?'Выберите, кого исключить':p.role?.team==='mafia'?'Выберите жертву':'Выберите цель способности'
- useEffect(()=>{if(p.screen==='chat')chatEndRef.current?.scrollIntoView({behavior:'smooth',block:'end'})},[p.screen,p.chat,p.messages.length])
+ const scrollBottom=(smooth=true)=>chatEndRef.current?.scrollIntoView({behavior:smooth?'smooth':'auto',block:'end'})
+ useEffect(()=>{if(p.screen==='chat'){setTimeout(()=>scrollBottom(false),40);setAwayFromBottom(false);setTimeout(()=>inputRef.current?.focus(),90)}},[p.screen,p.chat])
+ useEffect(()=>{if(p.screen==='chat'&&!awayFromBottom)scrollBottom(true)},[p.messages.length])
+ const onChatScroll=()=>{const el=chatRef.current;if(!el)return;setAwayFromBottom(el.scrollHeight-el.scrollTop-el.clientHeight>90)}
+ const send=()=>{if(!chatOpen||!p.text.trim())return;p.actions.send();setTimeout(()=>inputRef.current?.focus(),50)}
  return <main className="app gameApp"><Header leave={p.actions.leave}/><section className="gameShell">
   <div className="mobileGameHeader"><div><small className="muted">{p.room.name}</small><h2>{phaseNames[p.room.status]}</h2></div><button className="code" onClick={()=>navigator.clipboard.writeText(p.room.code)}>{p.room.code}</button></div>
   {p.seconds>0&&<div className="timer">⏱ {Math.floor(p.seconds/60)}:{String(p.seconds%60).padStart(2,'0')}</div>}
-
-  {p.screen==='game'&&<div className="screenView">
-   {p.room.last_result&&<div className="notice resultNotice">{p.room.last_result}</div>}
-   {p.event&&<div className="eventCard"><div className="eventIcon">{eventIcons[p.event.event_key]||'⚡'}</div><div><div className="eyebrow">происшествие дня</div><h3>{p.event.title}</h3><p>{p.event.description}</p></div></div>}
-   <div className="quickGrid"><button onClick={()=>p.setScreen('role')}><span>♠</span><b>{info?.[1]||'Роль'}</b><small>Посмотреть роль</small></button><button onClick={()=>p.setScreen('players')}><span>♟</span><b>{p.players.filter((x:any)=>x.status==='alive').length} живых</b><small>Игроки и действия</small></button><button onClick={()=>p.setScreen('chat')}><span>◌</span><b>Открыть чат</b><small>{systemCount} сообщений ведущего</small></button></div>
-   {p.room.status!=='finished'&&<div className="autoPhaseHint">Фаза сменится автоматически после окончания таймера</div>}
-   {p.room.status==='finished'&&<div className="winner">{p.room.winner==='city'||p.room.winner==='town'?'🏙️ Победил город':p.room.winner==='mafia'?'🔪 Победила мафия':p.room.winner==='jester'?'🃏 Победил Шут':p.room.winner==='maniac'?'🪓 Победил Маньяк':'Игра завершена'}</div>}
-  </div>}
-
+  {p.screen==='game'&&<div className="screenView">{p.room.last_result&&<div className="notice resultNotice">{p.room.last_result}</div>}{p.event&&<div className="eventCard"><div className="eventIcon">{eventIcons[p.event.event_key]||'⚡'}</div><div><div className="eyebrow">происшествие дня</div><h3>{p.event.title}</h3><p>{p.event.description}</p></div></div>}<div className="quickGrid"><button onClick={()=>p.setScreen('role')}><span>♠</span><b>{info?.[1]||'Роль'}</b><small>Посмотреть роль</small></button><button onClick={()=>p.setScreen('players')}><span>♟</span><b>{p.players.filter((x:any)=>x.status==='alive').length} живых</b><small>Игроки и действия</small></button><button onClick={()=>p.setScreen('chat')}><span>◌</span><b>Открыть чат</b><small>{systemCount} сообщений ведущего</small></button></div>{p.room.status!=='finished'&&<div className="autoPhaseHint">Фаза сменится автоматически после окончания таймера</div>}{p.room.status==='finished'&&<div className="winner">{p.room.winner==='city'||p.room.winner==='town'?'🏙️ Победил город':p.room.winner==='mafia'?'🔪 Победила мафия':p.room.winner==='jester'?'🃏 Победил Шут':p.room.winner==='maniac'?'🪓 Победил Маньяк':'Игра завершена'}</div>}</div>}
   {p.screen==='chat'&&<div className="screenView chatScreen">
-   <div className="chatHeader"><div><h3>{!p.alive?'Чат выбывших':p.mafia?(p.chat==='mafia'?'Чат мафии':'Общий чат'):'Общий чат'}</h3><small>{chatOpen?'Можно писать сообщения':'Чат временно закрыт'}</small></div><span className={chatOpen?'chatStatus online':'chatStatus'}>{chatOpen?'● открыт':'● закрыт'}</span></div>
+   <div className="chatHeader"><div><h3>{!p.alive?'Чат выбывших':p.mafia?(p.chat==='mafia'?'Чат мафии':'Общий чат'):'Общий чат'}</h3><small>{chatOpen?'Общайтесь и обсуждайте игроков':'Сообщения временно недоступны'}</small></div><span className={chatOpen?'chatStatus online':'chatStatus'}>{chatOpen?'● открыт':'● закрыт'}</span></div>
    {p.alive&&p.mafia&&<div className="chatTabs"><button className={p.chat==='general'?'active':''} onClick={()=>p.setChat('general')}>Город</button><button className={p.chat==='mafia'?'active':''} onClick={()=>p.setChat('mafia')}>Мафия</button></div>}
-   <div className="chat">{p.messages.length===0&&<div className="emptyState"><b>Сообщений пока нет</b><span>Начните обсуждение первым</span></div>}{p.messages.map((m:any)=><div key={m.id} className={'msg '+(m.user_id===p.uid?'me ':'')+(m.channel==='system'?'system':'')}><small>{m.channel==='system'?'🎙 Ведущий':m.user_id===p.uid?'Вы':m.nickname}</small><div>{m.body}</div></div>)}<div ref={chatEndRef}/></div>
-   <div className="composer"><input className="field" disabled={!chatOpen} value={p.text} onChange={(e:any)=>p.setText(e.target.value)} onKeyDown={(e:any)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();p.actions.send()}}} placeholder={chatOpen?'Написать сообщение...':'Чат закрыт до следующей фазы'}/><button aria-label="Отправить сообщение" className="send" disabled={!chatOpen||!p.text.trim()} onClick={p.actions.send}>➤</button></div>
+   <div className="chatConversation"><div ref={chatRef} onScroll={onChatScroll} className="chat">{p.messages.length===0&&<div className="emptyState"><b>Начните разговор</b><span>Напишите первое сообщение участникам</span></div>}{p.messages.map((m:any)=><div key={m.id} className={'msg '+(m.user_id===p.uid?'me ':'')+(m.channel==='system'?'system':'')}><div className="msgMeta"><strong>{m.channel==='system'?'🎙 Ведущий':m.user_id===p.uid?'Вы':m.nickname}</strong><time>{messageTime(m.created_at)}</time></div><div className="msgBody">{m.body}</div></div>)}<div ref={chatEndRef}/></div>{awayFromBottom&&<button className="scrollLatest" onClick={()=>{scrollBottom();setAwayFromBottom(false)}}>↓ Новые сообщения</button>}</div>
+   <div className={'composer '+(!chatOpen?'locked':'')}><textarea ref={inputRef} rows={1} maxLength={500} disabled={!chatOpen} value={p.text} onChange={(e:any)=>p.setText(e.target.value)} onKeyDown={(e:any)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}} placeholder={chatOpen?'Сообщение...':'Чат откроется в следующей фазе'}/><button aria-label="Отправить сообщение" className="send" disabled={!chatOpen||!p.text.trim()} onClick={send}>➤</button><div className="composerHint">Enter — отправить · Shift+Enter — новая строка</div></div>
   </div>}
-
   {p.screen==='players'&&<div className="screenView"><div className="sectionTitle"><div><h3>{action?actionTitle:'Игроки'}</h3><small className="muted">{action?'Нажмите на карточку игрока, затем подтвердите выбор':'Список участников текущей игры'}</small></div><span>{p.players.filter((x:any)=>x.status==='alive').length} живых</span></div><div className="players playerList">{p.players.map((x:any)=>{const disabled=!action||x.status!=='alive'||x.user_id===p.uid;return <button disabled={disabled} onClick={()=>p.setSelected(x.user_id)} className={'player playerRow '+(p.selected===x.user_id?'selected ':'')+(x.status!=='alive'?'eliminated ':'')+(disabled?'unavailable':'')} key={x.user_id}><div className="avatarWrap"><div className="avatar">{x.status==='alive'?'👤':'💀'}</div></div><div className="playerInfo"><div className="playerName">{x.nickname}{x.user_id===p.uid&&<span className="youTag">Вы</span>}</div><div className={x.status==='alive'?'alive':'dead'}>{x.status==='alive'?'В игре':'Выбыл'}{x.vote_weight>1?' · двойной голос':''}</div></div>{p.selected===x.user_id&&<div className="selectedMark">✓</div>}</button>})}</div>{p.actionMessage&&<div className="actionSuccess">✓ {p.actionMessage}</div>}{action&&p.alive&&<div className="stickyActions"><button className="primary confirmAction" disabled={!p.selected||p.actionBusy} onClick={p.actions.act}>{p.actionBusy?'Отправляем...':p.room.status==='voting'?'Подтвердить голос':'Подтвердить действие'}</button></div>}</div>}
-
   {p.screen==='role'&&<div className="screenView">{info&&<div className="roleCard"><div className="roleIcon">{info[0]}</div><div className="eyebrow">ваша роль</div><h2>{info[1]}</h2><p>{p.room.status==='finished'?'Партия завершена.':info[2]}</p>{p.role?.metadata?.night_result&&<div className="privateResult">🔐 {p.role.metadata.night_result}</div>}</div>}{p.mission&&<div className="missionCard"><div className="missionTop"><span>🎯 Секретная миссия</span><b>+{p.mission.reward} XP</b></div><p>{p.mission.description}</p></div>}<button className="secondary" onClick={()=>p.setScreen('players')}>Перейти к игрокам</button></div>}
-
   {p.error&&<div className="notice floatingError">{p.error}</div>}
  </section><BottomNav screen={p.screen} setScreen={p.setScreen} unread={0}/></main>
 }
