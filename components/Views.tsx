@@ -21,7 +21,7 @@ export function GameView(p:any){
    {p.room.last_result&&<div className="notice resultNotice">{p.room.last_result}</div>}
    {p.event&&<div className="eventCard"><div className="eventIcon">{eventIcons[p.event.event_key]||'⚡'}</div><div><div className="eyebrow">происшествие дня</div><h3>{p.event.title}</h3><p>{p.event.description}</p></div></div>}
    <div className="quickGrid"><button onClick={()=>p.setScreen('role')}><span>♠</span><b>{info?.[1]||'Роль'}</b><small>Посмотреть роль</small></button><button onClick={()=>p.setScreen('players')}><span>♟</span><b>{p.players.filter((x:any)=>x.status==='alive').length} живых</b><small>Игроки и действия</small></button><button onClick={()=>p.setScreen('chat')}><span>◌</span><b>Открыть чат</b><small>{systemCount} сообщений ведущего</small></button></div>
-   {p.room.host_id===p.uid&&p.room.status!=='finished'&&<button className="primary bigAction" onClick={p.actions.advance}>Перейти к следующей фазе</button>}
+   {p.room.status!=='finished'&&<div className="autoPhaseNotice">Ведущий переключит фазу автоматически после окончания таймера.</div>}
    {p.room.status==='finished'&&<div className="winner">{p.room.winner==='city'||p.room.winner==='town'?'🏙️ Победил город':p.room.winner==='mafia'?'🔪 Победила мафия':p.room.winner==='jester'?'🃏 Победил Шут':p.room.winner==='maniac'?'🪓 Победил Маньяк':'Игра завершена'}</div>}
   </div>}
 
