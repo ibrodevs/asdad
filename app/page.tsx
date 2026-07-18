@@ -1,10 +1,12 @@
 'use client'
+import Link from 'next/link'
 import {useEffect,useMemo,useState} from 'react'
 import {supabase} from '../lib/supabase'
 import {HomeView,LobbyView,GameView} from '../components/Views'
 
 const errors:any={NOT_NIGHT:'Сейчас не ночь',NOT_VOTING:'Сейчас нельзя голосовать',DEAD_PLAYER:'Вы уже выбыли',INVALID_TARGET:'Эта цель недоступна',NO_ACTION:'У вашей роли нет ночного действия',CANNOT_TARGET_SELF:'Эта роль не может выбрать себя',CANNOT_TARGET_MAFIA:'Нельзя выбрать участника мафии',DOCTOR_REPEAT_TARGET:'Доктор не может лечить одну цель две ночи подряд',CANNOT_VOTE_SELF:'Нельзя голосовать за себя',GENERAL_CHAT_CLOSED:'Общий чат сейчас закрыт',MAFIA_CHAT_CLOSED:'Чат мафии доступен только ночью',YOU_ARE_BLACKMAILED:'Сегодня вы не можете писать из-за шантажа',TOO_EARLY:'Таймер фазы ещё не закончился'}
 const humanError=(value?:string)=>errors[value||'']||errors[value?.split(':').pop()||'']||value?.replaceAll('_',' ')||'Произошла ошибка'
+const GuideLink=()=> <Link className="aboutFloating" href="/about" aria-label="Открыть правила игры"><b>?</b><span>Об игре</span></Link>
 
 export default function Home(){
  const [tab,setTab]=useState<'create'|'join'>('create'),[name,setName]=useState(''),[code,setCode]=useState(''),[roomId,setRoomId]=useState<string|null>(null),[uid,setUid]=useState(''),[room,setRoom]=useState<any>(null),[players,setPlayers]=useState<any[]>([]),[role,setRole]=useState<any>(null),[mission,setMission]=useState<any>(null),[events,setEvents]=useState<any[]>([]),[messages,setMessages]=useState<any[]>([]),[text,setText]=useState(''),[error,setError]=useState(''),[selected,setSelected]=useState(''),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[chat,setChat]=useState<'general'|'mafia'|'dead'>('general'),[screen,setScreen]=useState<'game'|'chat'|'players'|'role'>('game'),[actionBusy,setActionBusy]=useState(false),[actionMessage,setActionMessage]=useState('')
@@ -22,9 +24,9 @@ export default function Home(){
  async function rpc(fn:string,args:any){setError('');const r=await supabase.rpc(fn,args);if(r.error){setError(humanError(r.error.message));return false}await load();return true}
  async function submitAction(){if(!selected||!roomId||actionBusy)return;setActionBusy(true);setError('');setActionMessage('');const voting=room?.status==='voting';const ok=await rpc(voting?'cast_vote':'submit_night_action',{p_room:roomId,p_target:selected});if(ok){const target=players.find(p=>p.user_id===selected)?.nickname||'игрок';setActionMessage(voting?`Голос за ${target} принят`:`Действие на ${target} подтверждено`)}setActionBusy(false)}
  const actions={ready:()=>rpc('set_player_ready',{p_room:roomId,p_ready:!me?.is_ready}),start:()=>rpc('start_game',{p_room:roomId}),act:submitAction,send:async()=>{if(!text.trim())return;const ok=await rpc('send_game_message',{p_room:roomId,p_channel:chat,p_body:text.trim()});if(ok)setText('')},leave:()=>{localStorage.removeItem('mafia-room');setRoomId(null);setRoom(null);setScreen('game')}}
- if(!roomId)return <HomeView {...{tab,setTab,name,setName,code,setCode,busy,error,enter}}/>
- if(loading&&!room)return <main className="app"><div className="panel lobbyLoading"><div className="spinner"/><h2>Загружаем игру</h2></div></main>
- if(!room)return <main className="app"><div className="notice">{error||'Комната недоступна'}</div><button className="primary" onClick={actions.leave}>На главную</button></main>
- if(room.status==='waiting')return <LobbyView {...{room,players,me,host,error,actions}}/>
- return <GameView {...{room,players,me,role,mission,event,messages:filtered,uid,alive,mafia,chat,setChat,text,setText,error,selected,setSelected,seconds,actions,screen,setScreen,actionBusy,actionMessage}}/>
+ if(!roomId)return <><HomeView {...{tab,setTab,name,setName,code,setCode,busy,error,enter}}/><GuideLink/></>
+ if(loading&&!room)return <><main className="app"><div className="panel lobbyLoading"><div className="spinner"/><h2>Загружаем игру</h2></div></main><GuideLink/></>
+ if(!room)return <><main className="app"><div className="notice">{error||'Комната недоступна'}</div><button className="primary" onClick={actions.leave}>На главную</button></main><GuideLink/></>
+ if(room.status==='waiting')return <><LobbyView {...{room,players,me,host,error,actions}}/><GuideLink/></>
+ return <><GameView {...{room,players,me,role,mission,event,messages:filtered,uid,alive,mafia,chat,setChat,text,setText,error,selected,setSelected,seconds,actions,screen,setScreen,actionBusy,actionMessage}}/><GuideLink/></>
 }
