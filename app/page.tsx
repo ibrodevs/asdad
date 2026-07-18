@@ -26,5 +26,5 @@ export default function Home(){
  if(loading&&!room)return <main className="app"><div className="panel lobbyLoading"><div className="spinner"/><h2>Загружаем игру</h2></div></main>
  if(!room)return <main className="app"><div className="notice">{error||'Комната недоступна'}</div><button className="primary" onClick={actions.leave}>На главную</button></main>
  if(room.status==='waiting')return <LobbyView {...{room,players,me,host,error,actions}}/>
- return <GameView {...{room,players,role,mission,event,messages:filtered,uid,alive,mafia,chat,setChat,text,setText,error,selected,setSelected,seconds,actions,screen,setScreen,actionBusy,actionMessage}}/>
+ return <GameView {...{room,players,me,role,mission,event,messages:filtered,uid,alive,mafia,chat,setChat,text,setText,error,selected,setSelected,seconds,actions,screen,setScreen,actionBusy,actionMessage}}/>
 }
