@@ -1,0 +1,2 @@
+@media(max-width:759px){.gameApp:has(.chatScreen) .mobileGameHeader .code{display:none}}
+@media(min-width:760px){.gameApp:has(.chatScreen) .mobileGameHeader .code{display:none}}
