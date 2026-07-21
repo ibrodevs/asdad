@@ -1,0 +1,106 @@
+/* Playful editorial geometry adapted to the existing black / burgundy Mafia palette. */
+
+:root{
+  --playful-card-radius:44px;
+  --playful-pill-radius:999px;
+  --playful-shadow:0 32px 80px rgba(0,0,0,.48),0 2px 8px rgba(0,0,0,.2);
+}
+
+body{letter-spacing:-.018em}
+.app{width:min(1200px,100%);padding-inline:18px}
+
+.top{padding:10px 4px 28px}
+.brand{font-size:24px;font-weight:900;font-style:italic;letter-spacing:-.055em}
+.brand:before{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:10px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;box-shadow:none}
+
+.hero{min-height:500px;padding:72px 30px 50px;border-radius:var(--playful-card-radius);box-shadow:var(--playful-shadow);justify-content:center;text-align:center;align-items:center}
+.hero:after{right:5%;top:1%;font-size:220px;opacity:.75}
+.hero .eyebrow{align-self:center}
+.hero h1{max-width:900px;margin:24px 0 20px;font-size:clamp(62px,12vw,118px);line-height:.88;font-weight:900;font-style:italic;letter-spacing:-.075em;text-transform:none}
+.hero p{max-width:620px;margin:0 auto;color:#d8c9cb;font-size:18px;line-height:1.6}
+
+.panel{margin-top:24px;padding:26px;border-radius:var(--playful-card-radius);box-shadow:var(--playful-shadow)}
+.tabs,.chatTabs{padding:7px;border-radius:var(--playful-pill-radius)}
+.tab,.chatTabs button{min-height:48px;border-radius:var(--playful-pill-radius);font-weight:700}
+.field{min-height:56px;padding:16px 22px;border-radius:var(--playful-pill-radius)}
+.primary,.secondary{min-height:56px;padding:16px 24px;border-radius:var(--playful-pill-radius);font-weight:800;letter-spacing:-.02em}
+.primary:hover:not(:disabled),.secondary:hover:not(:disabled){transform:translateY(-1px)}
+
+.features{gap:14px;margin-top:24px}
+.feature,.player,.missionCard,.eventCard,.quickGrid button{border-radius:32px}
+.feature{min-height:150px;padding:24px;display:flex;flex-direction:column;justify-content:flex-end}
+.feature b{font-size:18px}
+.feature span{font-size:14px;line-height:1.55}
+
+.lobbyInvite,.roleCard{padding:42px 28px;border-radius:var(--playful-card-radius);box-shadow:var(--playful-shadow)}
+.bigCode{font-size:clamp(48px,11vw,78px);font-weight:900;font-style:italic;letter-spacing:.1em}
+.inviteActions{gap:12px}
+
+.roomHeader h2,.mobileGameHeader h2{font-size:clamp(34px,6vw,54px);font-weight:900;font-style:italic;letter-spacing:-.055em}
+.timer{position:relative;overflow:hidden;min-height:48px;display:grid;place-items:center;border-radius:var(--playful-pill-radius);font-size:16px;font-weight:800}
+.timer:after{content:'';position:absolute;inset:auto 0 0;height:3px;background:linear-gradient(90deg,var(--red),var(--red2))}
+
+.gameShell{max-width:1000px}
+.mobileGameHeader{padding:12px 2px 18px}
+.screenView{padding-bottom:8px}
+.quickGrid{gap:14px}
+.quickGrid button{min-height:132px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.quickGrid button>span{font-size:34px}
+.quickGrid button b{font-size:18px}
+.quickGrid button small{font-size:13px;line-height:1.5}
+
+.eventCard{grid-template-columns:64px 1fr;gap:18px;padding:26px;box-shadow:0 22px 60px rgba(0,0,0,.34)}
+.eventIcon{font-size:34px}
+.eventCard h3{font-size:26px;font-style:italic;letter-spacing:-.04em}
+
+.roleCard .roleIcon{font-size:76px}
+.roleCard h2{font-size:clamp(48px,10vw,76px);font-weight:900;font-style:italic;letter-spacing:-.06em}
+.roleCard p{max-width:620px;margin-inline:auto;font-size:17px;line-height:1.65;color:#d4c6c8}
+.privateResult,.missionCard{padding:20px;border-radius:28px}
+
+.player{padding:22px}
+.playerRow{min-height:96px}
+.avatar{font-size:34px}
+.playerName{font-size:16px;font-weight:750}
+
+.chatHeader h3,.sectionTitle h3{font-size:30px;font-weight:900;font-style:italic;letter-spacing:-.045em}
+.msg{padding:14px 17px;border-radius:24px 24px 24px 7px}
+.msg.me{border-radius:24px 24px 7px 24px}
+.msg.system{border-radius:28px;padding:16px 18px}
+.composer textarea{border-radius:28px!important;padding:15px 18px!important}
+.send{width:56px;min-width:56px;height:56px;border-radius:50%}
+
+.bottomNav{width:min(680px,calc(100% - 24px));padding:9px;border-radius:32px;box-shadow:var(--playful-shadow)}
+.bottomNav button{min-height:58px;border-radius:24px}
+.bottomNav button span{font-size:21px}
+
+.gameModal{border-radius:var(--playful-card-radius)!important;padding:32px!important;box-shadow:var(--playful-shadow)!important}
+.gameModal h1,.gameModal h2{font-weight:900;font-style:italic;letter-spacing:-.055em}
+.gameModal h1{font-size:clamp(48px,12vw,78px)}
+.gameModal h2{font-size:clamp(34px,8vw,52px)}
+.modalSymbol{font-size:58px!important}
+.winnerSide,.resultDetails>div{border-radius:28px!important}
+
+.aboutFloating,.roleExitButton{border-radius:var(--playful-pill-radius)!important}
+
+@media(min-width:760px){
+  .app{padding:34px 30px 130px}
+  .hero{padding:86px 64px 68px}
+  .panel{padding:40px}
+  .features{gap:18px}
+  .quickGrid{gap:18px}
+  .quickGrid button{min-height:160px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start}
+  .quickGrid button>span{margin-bottom:auto}
+  .playerList{gap:14px}
+}
+
+@media(max-width:759px){
+  .hero{min-height:430px;padding:58px 22px 38px;border-radius:36px}
+  .hero h1{font-size:clamp(56px,18vw,82px)}
+  .hero p{font-size:16px}
+  .panel{padding:20px;border-radius:34px}
+  .features{grid-template-columns:1fr}
+  .feature{min-height:118px}
+  .inviteActions{grid-template-columns:1fr}
+  .gameModal{border-radius:36px 36px 0 0!important;padding:28px 20px calc(24px + env(safe-area-inset-bottom))!important}
+}
