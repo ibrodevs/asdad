@@ -1,10 +1,21 @@
 @media(max-width:759px){
+  .gameApp:has(.chatScreen) .chatScreen{
+    pointer-events:none!important;
+  }
+
+  .gameApp:has(.chatScreen) .chatHeader,
+  .gameApp:has(.chatScreen) .chatTabs,
+  .gameApp:has(.chatScreen) .chatConversation,
+  .gameApp:has(.chatScreen) .composer{
+    pointer-events:auto!important;
+  }
+
   .gameApp:has(.chatScreen) .composer{
     position:fixed!important;
     left:10px!important;
     right:10px!important;
     bottom:calc(94px + env(safe-area-inset-bottom))!important;
-    z-index:1001!important;
+    z-index:2000!important;
     margin:0!important;
   }
 
@@ -12,14 +23,19 @@
     position:fixed!important;
     left:50%!important;
     bottom:12px!important;
-    z-index:1000!important;
+    width:min(620px,calc(100% - 24px))!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,1fr)!important;
+    z-index:3000!important;
     transform:translateX(-50%)!important;
+    opacity:1!important;
+    pointer-events:auto!important;
     transition:transform .18s ease,opacity .18s ease!important;
   }
 
   html.mobile-keyboard-open .gameApp:has(.chatScreen) .composer{
     bottom:max(8px,env(safe-area-inset-bottom))!important;
-    z-index:1200!important;
+    z-index:3200!important;
   }
 
   html.mobile-keyboard-open .gameApp:has(.chatScreen) .bottomNav{
