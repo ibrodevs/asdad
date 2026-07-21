@@ -7,5 +7,7 @@ import './about-link.css'
 import './role-exit.css'
 import './game-modals.css'
 import './playful-dark.css'
+import './mobile-keyboard.css'
+import MobileKeyboardViewport from '../components/MobileKeyboardViewport'
 export const metadata={title:'Mafia by Ibro — Мафия онлайн',description:'Mafia by Ibro — атмосферная онлайн-мафия с событиями и автоматическим ведущим'}
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/>{children}</body></html>}
