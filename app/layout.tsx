@@ -1,6 +1,7 @@
 import './globals.css'
 import './player-fixes.css'
 import './chat-improvements.css'
+import './chat-hide-code.css'
 import './gameplay-v2.css'
 import './about-link.css'
 import './role-exit.css'
