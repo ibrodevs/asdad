@@ -5,14 +5,14 @@ import {supabase} from '../lib/supabase'
 
 type Phase='role_reveal'|'night'|'morning'|'discussion'|'voting'|'finished'|string
 
-type Transition={phase:Phase,title:string,subtitle:string,icon:string,kind:string}
+type Transition={phase:Phase,title:string,subtitle:string,icon:string,kind:string,result?:string}
 
 const transitions:Record<string,Transition>={
   role_reveal:{phase:'role_reveal',title:'Роли распределены',subtitle:'Запомните свою сторону. Никому не доверяйте.',icon:'🎭',kind:'reveal'},
   night:{phase:'night',title:'Город засыпает',subtitle:'Просыпаются те, кто действует во тьме.',icon:'🌙',kind:'night'},
   morning:{phase:'morning',title:'Наступает рассвет',subtitle:'Город узнаёт, что произошло этой ночью.',icon:'🌅',kind:'dawn'},
   discussion:{phase:'discussion',title:'Время обсуждения',subtitle:'Ищите противоречия. Слушайте внимательно.',icon:'💬',kind:'discussion'},
-  voting:{phase:'voting',title:'Начинается голосование',subtitle:'Решение города будет окончательным.',icon:'⏳',kind:'voting'},
+  voting:{phase:'voting',title:'Начинается голосование',subtitle:'Решение города будет окончательным.',icon:'⚖️',kind:'voting'},
   finished:{phase:'finished',title:'Партия завершена',subtitle:'Город сделал свой последний выбор.',icon:'🏆',kind:'finished'}
 }
 
@@ -31,20 +31,21 @@ export default function PhaseTransitions(){
       lastPhase.current=status
       if(first)return
 
-      const transition=transitions[status]
-      if(!transition)return
+      const base=transitions[status]
+      if(!base)return
 
       window.clearTimeout(hideTimer.current)
-      setActive(transition)
+      const result=status==='morning'&&lastResult?lastResult:undefined
+      setActive({...base,result})
 
       const violent=Boolean(lastResult&&/(погиб|убит|устран|исключ|жертв|казн)/i.test(lastResult))
       if(violent){
         document.documentElement.classList.remove('phase-impact')
         requestAnimationFrame(()=>document.documentElement.classList.add('phase-impact'))
-        window.setTimeout(()=>document.documentElement.classList.remove('phase-impact'),700)
+        window.setTimeout(()=>document.documentElement.classList.remove('phase-impact'),1150)
       }
 
-      hideTimer.current=window.setTimeout(()=>setActive(null),status==='voting'?2100:1900)
+      hideTimer.current=window.setTimeout(()=>setActive(null),status==='voting'?3900:3500)
     }
 
     const connect=async()=>{
@@ -74,16 +75,22 @@ export default function PhaseTransitions(){
 
   return <div className={`phaseTransition phase-${active.kind}`} aria-live="assertive">
     <div className="phaseBackdrop"/>
+    <div className="phaseVignette"/>
+    <div className="phaseRays"/>
+    <div className="phaseFog phaseFogOne"/>
+    <div className="phaseFog phaseFogTwo"/>
+    <div className="phaseParticles"/>
     <div className="phaseStars"/>
     <div className="phaseCity">
-      <span/><span/><span/><span/><span/><span/><span/>
+      <span/><span/><span/><span/><span/><span/><span/><span/><span/>
     </div>
     <div className="phaseContent">
-      <div className="phaseIcon">{active.icon}</div>
+      <div className="phaseIconRing"><div className="phaseIcon">{active.icon}</div></div>
       {active.kind==='voting'&&<div className="phaseCountdown"><i>3</i><i>2</i><i>1</i></div>}
       <div className="phaseEyebrow">Новая фаза</div>
       <h1>{active.title}</h1>
       <p>{active.subtitle}</p>
+      {active.result&&<div className="phaseResult">{active.result}</div>}
       <div className="phaseLine"/>
     </div>
   </div>
