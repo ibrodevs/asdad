@@ -18,4 +18,5 @@ import MobileKeyboardViewport from '../components/MobileKeyboardViewport'
 import ChatAutoScroll from '../components/ChatAutoScroll'
 import SkipPhaseVote from '../components/SkipPhaseVote'
 export const metadata={title:'Mafia by Ibro — Мафия онлайн',description:'Mafia by Ibro — атмосферная онлайн-мафия с событиями и автоматическим ведущим'}
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/><ChatAutoScroll/><SkipPhaseVote/>{children}</body></html>}
+const inviteGuard="try{if(new URLSearchParams(location.search).has('room'))localStorage.removeItem('mafia-room')}catch(e){}"
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><script dangerouslySetInnerHTML={{__html:inviteGuard}}/><MobileKeyboardViewport/><ChatAutoScroll/><SkipPhaseVote/>{children}</body></html>}
