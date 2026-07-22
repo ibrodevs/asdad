@@ -1,0 +1,40 @@
+/* The conversation viewport ends above the fixed composer.
+   Do not reserve the composer space twice inside the scrollable list. */
+@media (max-width:759px){
+  .chatScreen{
+    --chat-composer-space:calc(164px + env(safe-area-inset-bottom));
+    padding-bottom:var(--chat-composer-space)!important;
+  }
+
+  .chatScreen .chatConversation{
+    min-height:0;
+    overflow:hidden;
+  }
+
+  .chatScreen .chat{
+    height:100%;
+    padding-bottom:18px!important;
+    scroll-padding-bottom:18px!important;
+  }
+
+  .chatScreen .chat>div[aria-hidden="true"]:last-child,
+  .chatScreen .chat>div:last-child:empty{
+    min-height:2px;
+  }
+
+  .chatScreen .scrollLatest{
+    bottom:14px!important;
+  }
+
+  html.mobile-keyboard-open .chatScreen,
+  html.keyboard-open .chatScreen{
+    --chat-composer-space:calc(76px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width:760px){
+  .chatScreen .chat{
+    padding-bottom:18px!important;
+    scroll-padding-bottom:18px!important;
+  }
+}
