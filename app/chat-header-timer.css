@@ -1,21 +1,11 @@
 @media(max-width:759px){
   .gameApp:has(.chatScreen) .mobileGameHeader .code.chatHeaderTimerReplacement{
-    display:inline-flex!important;
-    align-items:center;
-    justify-content:center;
-    min-width:86px;
-    height:44px;
-    padding:0 14px;
-    border:1px solid #5d2630;
-    border-radius:999px;
-    background:#1a0d10;
-    color:#ffd5dc;
-    font-weight:800;
-    letter-spacing:0;
-    pointer-events:none;
+    display:none!important;
   }
 
   .gameApp:has(.chatScreen) .chatHeader .chatPhaseTimer{
-    display:none!important;
+    display:inline-flex!important;
+    align-items:center;
+    justify-content:center;
   }
 }
