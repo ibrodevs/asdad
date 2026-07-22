@@ -1,0 +1,18 @@
+.screenView:has(.actionSuccess) .playerList .playerRow,
+.screenView:has(.actionSuccess) .confirmAction{
+  pointer-events:none!important;
+  cursor:not-allowed!important;
+}
+.screenView:has(.actionSuccess) .playerList .playerRow{
+  opacity:.52!important;
+  filter:saturate(.65);
+}
+.screenView:has(.actionSuccess) .confirmAction{
+  opacity:.58!important;
+  background:linear-gradient(180deg,#25372e,#14251c)!important;
+  border-color:#3d7558!important;
+  color:#a7dfbf!important;
+}
+.screenView:has(.actionSuccess) .confirmAction::after{
+  content:" · подтверждено";
+}
