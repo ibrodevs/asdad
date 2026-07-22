@@ -10,7 +10,9 @@ import './playful-dark.css'
 import './mobile-keyboard.css'
 import './chat-header-timer.css'
 import './redesign-2026.css'
+import './skip-phase.css'
 import MobileKeyboardViewport from '../components/MobileKeyboardViewport'
 import ChatAutoScroll from '../components/ChatAutoScroll'
+import SkipPhaseVote from '../components/SkipPhaseVote'
 export const metadata={title:'Mafia by Ibro — Мафия онлайн',description:'Mafia by Ibro — атмосферная онлайн-мафия с событиями и автоматическим ведущим'}
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/><ChatAutoScroll/>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/><ChatAutoScroll/><SkipPhaseVote/>{children}</body></html>}
