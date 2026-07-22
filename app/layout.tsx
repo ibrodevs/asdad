@@ -11,6 +11,5 @@ import './mobile-keyboard.css'
 import './chat-header-timer.css'
 import './redesign-2026.css'
 import MobileKeyboardViewport from '../components/MobileKeyboardViewport'
-import ChatSendGuard from '../components/ChatSendGuard'
 export const metadata={title:'Mafia by Ibro — Мафия онлайн',description:'Mafia by Ibro — атмосферная онлайн-мафия с событиями и автоматическим ведущим'}
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/><ChatSendGuard/>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body><MobileKeyboardViewport/>{children}</body></html>}
